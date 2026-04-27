@@ -1,0 +1,70 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #f5f0e7;
+  --surface: rgba(255, 251, 245, 0.8);
+  --surface-strong: #fffaf2;
+  --surface-muted: #efe3d2;
+  --text: #1f1a17;
+  --text-soft: #655c54;
+  --accent: #0f766e;
+  --accent-strong: #115e59;
+  --accent-soft: #d7f4ef;
+  --border: rgba(120, 113, 108, 0.18);
+  --shadow: 0 20px 55px rgba(28, 25, 23, 0.07);
+  --shadow-soft: 0 10px 30px rgba(28, 25, 23, 0.05);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background:
+    radial-gradient(circle at top left, rgba(15, 118, 110, 0.12), transparent 24%),
+    radial-gradient(circle at right, rgba(217, 119, 6, 0.1), transparent 24%),
+    linear-gradient(180deg, #f7f3ec 0%, #f0e5d6 100%);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--text);
+  font-family: var(--font-body), sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-heading), sans-serif;
+}
+
+input,
+textarea,
+button {
+  font: inherit;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #a8a29e;
+}
+
+button,
+input,
+textarea {
+  transition:
+    border-color 140ms ease,
+    background-color 140ms ease,
+    box-shadow 140ms ease,
+    transform 140ms ease;
+}
+
+::selection {
+  background: rgba(15, 118, 110, 0.18);
+}
