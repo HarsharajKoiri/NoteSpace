@@ -128,14 +128,16 @@ def test_list_tasks_aggregates_tasks_from_all_notes(client: TestClient) -> None:
     assert response.status_code == 200
     body = response.json()
     assert len(body) == 3
-    assert body[0]["note_id"] == first_response.json()["id"]
-    assert body[0]["note_title"] == "Errands"
-    assert body[0]["text"] == "Buy tea."
+    assert body[0]["note_id"] == second_response.json()["id"]
+    assert body[0]["note_title"] == "Calls"
+    assert body[0]["text"] == "Call the bank tomorrow."
     assert body[0]["completed"] is False
-    assert body[1]["text"] == "Complete taxes."
-    assert body[2]["note_id"] == second_response.json()["id"]
-    assert body[2]["note_title"] == "Calls"
-    assert body[2]["text"] == "Call the bank tomorrow."
+    assert body[1]["note_id"] == first_response.json()["id"]
+    assert body[1]["note_title"] == "Errands"
+    assert body[1]["text"] == "Buy tea."
+    assert body[2]["note_id"] == first_response.json()["id"]
+    assert body[2]["note_title"] == "Errands"
+    assert body[2]["text"] == "Complete taxes."
 
 
 def test_list_notes_returns_newest_first(client: TestClient) -> None:
@@ -171,3 +173,67 @@ def test_create_note_rejects_blank_content(client: TestClient) -> None:
     )
 
     assert response.status_code == 422
+
+
+def test_update_note_recomputes_tags_and_tasks(client: TestClient) -> None:
+    create_response = client.post(
+        "/api/v1/notes",
+        json={"title": "Draft", "content": "Learn FastAPI patterns."},
+    )
+
+    response = client.put(
+        f"/api/v1/notes/{create_response.json()['id']}",
+        json={
+            "title": "Errands",
+            "content": "Buy milk. Call the bank tomorrow.",
+        },
+    )
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["title"] == "Errands"
+    assert body["tags"] == ["tasks"]
+    assert body["tasks"] == [
+        {"text": "Buy milk.", "completed": False},
+        {"text": "Call the bank tomorrow.", "completed": False},
+    ]
+    assert body["created_at"] == create_response.json()["created_at"]
+    assert body["updated_at"] != create_response.json()["updated_at"]
+
+
+def test_update_note_returns_404_for_missing_note(client: TestClient) -> None:
+    response = client.put(
+        "/api/v1/notes/missing-note-id",
+        json={"title": "Missing", "content": "Buy milk."},
+    )
+
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Note 'missing-note-id' was not found."
+
+
+def test_delete_note_removes_note_from_notes_and_tasks(client: TestClient) -> None:
+    first_response = client.post(
+        "/api/v1/notes",
+        json={"title": "Keep", "content": "Learn FastAPI patterns."},
+    )
+    second_response = client.post(
+        "/api/v1/notes",
+        json={"title": "Delete", "content": "Buy milk."},
+    )
+
+    delete_response = client.delete(f"/api/v1/notes/{second_response.json()['id']}")
+    notes_response = client.get("/api/v1/notes")
+    tasks_response = client.get("/api/v1/tasks")
+
+    assert delete_response.status_code == 204
+    assert notes_response.status_code == 200
+    assert [note["id"] for note in notes_response.json()] == [first_response.json()["id"]]
+    assert tasks_response.status_code == 200
+    assert tasks_response.json() == []
+
+
+def test_delete_note_returns_404_for_missing_note(client: TestClient) -> None:
+    response = client.delete("/api/v1/notes/missing-note-id")
+
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Note 'missing-note-id' was not found."

@@ -11,14 +11,14 @@ type TimelineListProps = {
 export function TimelineList({ notes, selectedNoteId = null, onOpenNote }: TimelineListProps) {
   if (notes.length === 0) {
     return (
-      <div className="rounded-[24px] border border-dashed border-[var(--border)] bg-[var(--surface-strong)] p-6 text-sm leading-6 text-[var(--text-soft)]">
-        No notes yet. Create your first note to start building the timeline.
+      <div className="rounded-[20px] border border-dashed border-[var(--border)] bg-[var(--canvas)] p-6 text-sm leading-6 text-[var(--text-soft)]">
+        No pages yet. Create your first note to start building the workspace.
       </div>
     );
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {notes.map((note) => (
         <NoteCard
           key={note.id}

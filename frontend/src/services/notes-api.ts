@@ -110,6 +110,34 @@ export async function createNote(values: NoteFormValues): Promise<Note> {
   return mapApiNote(note);
 }
 
+export async function updateNote(noteId: string, values: NoteFormValues): Promise<Note> {
+  const response = await fetch(`${API_BASE_URL}/notes/${noteId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      title: values.title || null,
+      content: values.content,
+    }),
+  });
+  const note = await handleResponse<ApiNote>(response);
+  return mapApiNote(note);
+}
+
+export async function deleteNote(noteId: string): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/notes/${noteId}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    await handleResponse<never>(response);
+  }
+}
+
 export async function searchNotes(query: string): Promise<Note[]> {
   const params = new URLSearchParams({ q: query });
   const response = await fetch(`${API_BASE_URL}/search?${params.toString()}`, {

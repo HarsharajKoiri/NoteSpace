@@ -13,43 +13,58 @@ export function NoteCard({ note, isSelected = false, onOpenNote }: NoteCardProps
   return (
     <article
       id={`note-${note.id}`}
-      className={`rounded-[26px] border bg-[var(--surface-strong)] p-5 shadow-[var(--shadow-soft)] ${
+      onClick={() => onOpenNote?.(note.id)}
+      className={`cursor-pointer rounded-[26px] border bg-[var(--surface-strong)] p-5 text-left shadow-[var(--shadow-soft)] ${
         isSelected
-          ? "border-[var(--accent)] ring-2 ring-[var(--accent-soft)]"
-          : "border-[var(--border)]"
+          ? "border-[var(--accent)] bg-[var(--canvas)]"
+          : "border-[var(--border)] hover:border-[var(--accent)] hover:bg-[var(--canvas)]"
       }`}
     >
-      <div className="flex items-start justify-between gap-4">
+      <div className="grid gap-4 md:grid-cols-[minmax(0,1.3fr)_110px_110px] md:items-start">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--text-soft)]">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--text-faint)]">
             {formatTimelineDate(note.createdAt)}
           </p>
-          <h3 className="mt-2 text-xl font-semibold leading-snug text-[var(--text)]">
+          <h3 className="mt-2 text-left text-lg font-semibold leading-snug text-[var(--text)]">
             {note.title ?? "Untitled note"}
           </h3>
+          <p className="mt-3 text-left text-sm leading-7 text-[var(--text-soft)]">
+            {note.content}
+          </p>
         </div>
-        <span className="shrink-0 rounded-full bg-[var(--accent-soft)] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--accent-strong)]">
-          {note.tasks.length} tasks
-        </span>
+        <div className="rounded-[18px] border border-[var(--border)] bg-[var(--surface-muted)] px-3 py-3 text-left">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--text-faint)]">
+            Tasks
+          </p>
+          <p className="mt-2 text-lg font-semibold text-[var(--text)]">{note.tasks.length}</p>
+        </div>
+        <div className="rounded-[18px] border border-[var(--border)] bg-[var(--surface-muted)] px-3 py-3 text-left">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--text-faint)]">
+            Links
+          </p>
+          <p className="mt-2 text-lg font-semibold text-[var(--text)]">{note.relatedNotes.length}</p>
+        </div>
       </div>
-      <p className="mt-4 text-[0.98rem] leading-7 text-[var(--text-soft)]">{note.content}</p>
       <div className="mt-5 flex flex-wrap gap-2">
         {note.tags.map((tag) => (
           <TagBadge key={tag} label={tag} />
         ))}
       </div>
       {note.relatedNotes.length > 0 ? (
-        <div className="mt-6 rounded-[22px] border border-[var(--border)] bg-white/55 p-4">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--text-soft)]">
-            Related Notes
+        <div className="mt-6 rounded-[20px] border border-[var(--border)] bg-[var(--canvas)] p-4">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--text-faint)]">
+            Related pages
           </p>
-          <div className="mt-3 space-y-3">
+          <div className="mt-3 grid gap-3">
             {note.relatedNotes.map((relatedNote) => (
               <button
                 key={relatedNote.id}
                 type="button"
-                onClick={() => onOpenNote?.(relatedNote.id)}
-                className="block w-full rounded-[18px] bg-white/65 p-3 text-left transition hover:bg-white/90"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  onOpenNote?.(relatedNote.id);
+                }}
+                className="block w-full rounded-[18px] border border-[var(--border)] bg-[var(--surface-strong)] p-3 text-left transition hover:border-[var(--accent)]"
               >
                 <p className="text-sm font-semibold text-[var(--text)]">
                   {relatedNote.title ?? "Untitled note"}

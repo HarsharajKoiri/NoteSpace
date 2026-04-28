@@ -193,7 +193,7 @@ export function CommandPalette({
           onClick={(event) => event.stopPropagation()}
         >
           {!query.trim() ? (
-            <div className="rounded-[20px] border border-dashed border-[var(--border)] bg-white/55 p-4 text-sm text-[var(--text-soft)]">
+            <div className="rounded-[20px] border border-dashed border-[var(--border)] bg-[color:var(--canvas)] p-4 text-sm text-[var(--text-soft)]">
               Search by note title, content, or tags. Use <span className="font-semibold">Ctrl/Cmd + K</span> to open this palette anytime.
             </div>
           ) : null}
@@ -206,7 +206,7 @@ export function CommandPalette({
             </div>
           ) : null}
           {!showLoading && !error && query.trim() && results.length === 0 ? (
-            <div className="rounded-[20px] border border-dashed border-[var(--border)] bg-white/55 p-4 text-sm leading-6 text-[var(--text-soft)]">
+            <div className="rounded-[20px] border border-dashed border-[var(--border)] bg-[color:var(--canvas)] p-4 text-sm leading-6 text-[var(--text-soft)]">
               No notes matched <span className="font-semibold text-[var(--text)]">"{query.trim()}"</span>.
             </div>
           ) : null}
@@ -217,7 +217,7 @@ export function CommandPalette({
                   key={note.id}
                   type="button"
                   onClick={() => handleOpen(note.id)}
-                  className="block w-full rounded-[20px] border border-[var(--border)] bg-white/75 p-4 text-left shadow-[var(--shadow-soft)] transition hover:bg-white"
+                  className="block w-full rounded-[20px] border border-[var(--border)] bg-[var(--surface)] p-4 text-left shadow-[var(--shadow-soft)] transition hover:bg-[var(--surface-strong)]"
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div>

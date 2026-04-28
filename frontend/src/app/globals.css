@@ -3,18 +3,42 @@
 @tailwind utilities;
 
 :root {
-  --background: #f5f0e7;
-  --surface: rgba(255, 251, 245, 0.8);
-  --surface-strong: #fffaf2;
-  --surface-muted: #efe3d2;
-  --text: #1f1a17;
-  --text-soft: #655c54;
-  --accent: #0f766e;
-  --accent-strong: #115e59;
-  --accent-soft: #d7f4ef;
-  --border: rgba(120, 113, 108, 0.18);
-  --shadow: 0 20px 55px rgba(28, 25, 23, 0.07);
-  --shadow-soft: 0 10px 30px rgba(28, 25, 23, 0.05);
+  --background: #f3efe7;
+  --canvas: #f8f5ef;
+  --surface: rgba(255, 252, 248, 0.78);
+  --surface-strong: rgba(255, 253, 250, 0.96);
+  --surface-muted: #ece5d8;
+  --text: #201b18;
+  --text-soft: #645b54;
+  --text-faint: #95887c;
+  --accent: #1d6b57;
+  --accent-strong: #124c3f;
+  --accent-soft: #d7ebe4;
+  --border: rgba(87, 71, 56, 0.14);
+  --shadow: 0 22px 80px rgba(35, 25, 17, 0.08);
+  --shadow-soft: 0 12px 30px rgba(35, 25, 17, 0.06);
+  --radius-panel: 32px;
+  --radius-card: 24px;
+  --radius-control: 20px;
+  --focus-ring: 0 0 0 4px rgba(29, 107, 87, 0.14);
+}
+
+:root[data-theme="dark"] {
+  --background: #0f1518;
+  --canvas: #121b1f;
+  --surface: rgba(18, 27, 31, 0.74);
+  --surface-strong: rgba(24, 35, 40, 0.94);
+  --surface-muted: #1d2a30;
+  --text: #edf3ef;
+  --text-soft: #b8c7c1;
+  --text-faint: #7f928b;
+  --accent: #2a8f74;
+  --accent-strong: #54b294;
+  --accent-soft: rgba(42, 143, 116, 0.2);
+  --border: rgba(181, 212, 201, 0.12);
+  --shadow: 0 22px 80px rgba(0, 0, 0, 0.34);
+  --shadow-soft: 0 12px 30px rgba(0, 0, 0, 0.24);
+  --focus-ring: 0 0 0 4px rgba(42, 143, 116, 0.18);
 }
 
 * {
@@ -23,9 +47,19 @@
 
 html {
   background:
-    radial-gradient(circle at top left, rgba(15, 118, 110, 0.12), transparent 24%),
-    radial-gradient(circle at right, rgba(217, 119, 6, 0.1), transparent 24%),
-    linear-gradient(180deg, #f7f3ec 0%, #f0e5d6 100%);
+    radial-gradient(circle at top left, rgba(29, 107, 87, 0.16), transparent 22%),
+    radial-gradient(circle at top right, rgba(164, 104, 59, 0.1), transparent 24%),
+  linear-gradient(180deg, #f4efe7 0%, #ece4d8 100%);
+  color-scheme: light;
+}
+
+html[data-theme="dark"] {
+  background:
+    radial-gradient(circle at top left, rgba(42, 143, 116, 0.22), transparent 24%),
+    radial-gradient(circle at top right, rgba(84, 178, 148, 0.08), transparent 22%),
+    linear-gradient(180deg, #0d1315 0%, #121a1f 100%);
+  color-scheme: dark;
+  background-color: var(--background);
 }
 
 body {
@@ -35,6 +69,18 @@ body {
   font-family: var(--font-body), sans-serif;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0)),
+    transparent;
+  transition:
+    background-color 180ms ease,
+    color 180ms ease;
+}
+
+html[data-theme="dark"] body {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0)),
+    transparent;
 }
 
 h1,
@@ -62,9 +108,73 @@ textarea {
     border-color 140ms ease,
     background-color 140ms ease,
     box-shadow 140ms ease,
+    color 140ms ease,
     transform 140ms ease;
 }
 
+button {
+  cursor: pointer;
+}
+
+.workspace-shell {
+  position: relative;
+}
+
+.workspace-shell::before {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.22) 0, rgba(255, 255, 255, 0.22) 1px, transparent 1px, transparent 120px),
+    linear-gradient(rgba(255, 255, 255, 0.18) 0, rgba(255, 255, 255, 0.18) 1px, transparent 1px, transparent 120px);
+  opacity: 0.28;
+  content: "";
+  pointer-events: none;
+}
+
+html[data-theme="dark"] .workspace-shell::before {
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.045) 0, rgba(255, 255, 255, 0.045) 1px, transparent 1px, transparent 120px),
+    linear-gradient(rgba(255, 255, 255, 0.035) 0, rgba(255, 255, 255, 0.035) 1px, transparent 1px, transparent 120px);
+  opacity: 0.22;
+}
+
+.workspace-panel {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(26px);
+  border-radius: var(--radius-panel);
+  overflow: hidden;
+}
+
+.workspace-sidebar {
+  position: sticky;
+  top: 0.75rem;
+  align-self: start;
+}
+
+@media (max-width: 1279px) {
+  .workspace-sidebar {
+    position: static;
+  }
+}
+
 ::selection {
-  background: rgba(15, 118, 110, 0.18);
+  background: rgba(29, 107, 87, 0.18);
+}
+
+html[data-theme="dark"] ::selection {
+  background: rgba(84, 178, 148, 0.22);
+}
+
+button:hover {
+  transform: translateY(-1px);
+}
+
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
 }
